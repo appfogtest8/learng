@@ -14,6 +14,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
+private var listSelectionFragment : ListSelectionFragment = ListSelectionFragment.newInstance()
+
 class MainActivity : AppCompatActivity(),
     ListSelectionFragment.OnListItemFragmentInteractionListener {
 
@@ -59,10 +61,8 @@ class MainActivity : AppCompatActivity(),
         builder.setPositiveButton(positiveButtonTitle) { dialog, _ ->
 
             val list = TaskList(listTitleEditText.text.toString())
-            listDataManager.saveList(list)
+            listSelectionFragment.addList(list)
 
-            val recyclerAdapter = listsRecyclerView.adapter as ListSelectionRecyclerViewAdapter
-            recyclerAdapter.addList(list)
 
             dialog.dismiss()
             showListDetail(list)
@@ -90,17 +90,12 @@ class MainActivity : AppCompatActivity(),
         if (requestCode == LIST_DETAIL_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             data?.let {
 
-                listDataManager.saveList(data.getParcelableExtra(INTENT_LIST_KEY) as TaskList)
+                listSelectionFragment.saveList(data.getParcelableExtra(INTENT_LIST_KEY) as TaskList)
                 updateLists()
             }
         }
     }
 
-    private fun updateLists() {
-
-        val lists = listDataManager.readLists()
-        listsRecyclerView.adapter = ListSelectionRecyclerViewAdapter(lists, this)
-    }
 
     companion object {
         const val INTENT_LIST_KEY = "list"

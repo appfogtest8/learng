@@ -6,6 +6,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import java.lang.RuntimeException
 
 
@@ -13,15 +15,21 @@ private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
 
-class ListSelectionFragment : Fragment() {
+class ListSelectionFragment : Fragment(),
+    ListSelectionRecyclerViewAdapter.ListSelectionRecyclerViewClickListener {
 
     private var listener : OnListItemFragmentInteractionListener? = null
+
+    lateinit var listsRecyclerView: RecyclerView
+
+    lateinit var listDataManager: ListDataManager
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
         if (context is OnListItemFragmentInteractionListener) {
             listener = context
+            listDataManager = ListDataManager(context)
         } else {
             throw  RuntimeException("$context must implement OnListItemFragmentInteractionListener")
         }
@@ -46,13 +54,31 @@ class ListSelectionFragment : Fragment() {
         listener = null
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+
+        val lists = listDataManager.readLists()
+        view?.let {
+            listsRecyclerView = it.findViewById(R.id.lists_recyclerview)
+            listsRecyclerView.layoutManager = LinearLayoutManager(activity)
+
+            listsRecyclerView.adapter = ListSelectionRecyclerViewAdapter(lists, this)
+
+        }
+    }
+
+    override fun listItemClicked(list: TaskList) {
+        listener?.onListItemClicked()
+    }
+
     interface OnListItemFragmentInteractionListener {
         fun onListItemClicked(list: TaskList)
     }
 
     companion object {
 
-        @JvmStatic
+        //@JvmStatic
         fun newInstance(): ListSelectionFragment {
             return ListSelectionFragment()
         }

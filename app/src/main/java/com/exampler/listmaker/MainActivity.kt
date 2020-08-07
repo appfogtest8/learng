@@ -15,11 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 class MainActivity : AppCompatActivity(),
-    ListSelectionRecyclerViewAdapter.ListSelectionRecyclerViewClickListener {
-
-    lateinit var listsRecyclerView: RecyclerView
-
-    val listDataManager: ListDataManager = ListDataManager(this)
+    ListSelectionFragment.OnListItemFragmentInteractionListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,11 +26,6 @@ class MainActivity : AppCompatActivity(),
           showCreateListDialog()
         }
 
-        val lists = listDataManager.readLists()
-        listsRecyclerView = findViewById(R.id.lists_recyclerview)
-        listsRecyclerView.layoutManager = LinearLayoutManager(this)
-
-        listsRecyclerView.adapter = ListSelectionRecyclerViewAdapter(lists, this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -89,7 +80,7 @@ class MainActivity : AppCompatActivity(),
         startActivityForResult(listDetailIntent, LIST_DETAIL_REQUEST_CODE)
     }
 
-    override fun listItemClicked(list: TaskList) {
+    override fun onListItemClicked(list: TaskList) {
         showListDetail(list)
     }
 

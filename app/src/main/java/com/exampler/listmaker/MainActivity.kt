@@ -10,11 +10,14 @@ import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.EditText
+import android.widget.FrameLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 
 private var listSelectionFragment : ListSelectionFragment = ListSelectionFragment.newInstance()
+
+private var fragmentContainer: FrameLayout? = null
 
 class MainActivity : AppCompatActivity(),
     ListSelectionFragment.OnListItemFragmentInteractionListener {
@@ -23,6 +26,13 @@ class MainActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar))
+
+        fragmentContainer = findViewById(R.id.fragment_container)
+
+        supportFragmentManager
+            .beginTransaction()
+            .add(R.id.fragment_container, listSelectionFragment)
+            .commit()
 
         findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
           showCreateListDialog()
@@ -91,7 +101,6 @@ class MainActivity : AppCompatActivity(),
             data?.let {
 
                 listSelectionFragment.saveList(data.getParcelableExtra(INTENT_LIST_KEY) as TaskList)
-                updateLists()
             }
         }
     }

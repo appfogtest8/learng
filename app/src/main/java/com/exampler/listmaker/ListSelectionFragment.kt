@@ -69,7 +69,7 @@ class ListSelectionFragment : Fragment(),
     }
 
     override fun listItemClicked(list: TaskList) {
-        listener?.onListItemClicked()
+        listener?.onListItemClicked(list)
     }
 
     fun addList(list: TaskList) {
